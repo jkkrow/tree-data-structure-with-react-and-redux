@@ -1,0 +1,19 @@
+.tree {
+  width: 100%;
+}
+
+.tree-info {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  padding: 20px;
+  margin: auto auto 20px auto;
+  gap: 20px;
+  border: 1px solid black;
+}
+
+.tree-info label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}

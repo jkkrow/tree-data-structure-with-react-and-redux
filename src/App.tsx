@@ -1,23 +1,20 @@
-import logo from './logo.svg';
+import Tree from './components/Tree';
+import { useAppDispatch, useAppSelector } from './store';
+import { treeActions } from './store/tree-slice';
 import './App.css';
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const tree = useAppSelector((state) => state.tree.tree);
+
+  const createTreeHandler = () => {
+    dispatch(treeActions.createTree());
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {tree && <Tree tree={tree} />}
+      {!tree && <button onClick={createTreeHandler}>Create Tree</button>}
     </div>
   );
 };
