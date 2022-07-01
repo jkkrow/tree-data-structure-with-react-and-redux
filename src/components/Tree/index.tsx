@@ -35,7 +35,7 @@ const Tree: React.FC<TreeProps> = ({ tree }) => {
   };
 
   const removeTreeHandler = () => {
-    dispatch(treeActions.removeTree());
+    dispatch(treeActions.deleteTree());
   };
 
   return (

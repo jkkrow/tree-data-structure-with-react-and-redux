@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { Node as NodeType, treeActions } from '../../store/tree-slice';
+import { findAncestors } from '../../util/tree';
 import './index.css';
 
 interface NodeProps {
@@ -10,13 +11,19 @@ interface NodeProps {
 
 const Node: React.FC<NodeProps> = ({ node, rootId }) => {
   const dispatch = useAppDispatch();
-  const activeNodeId = useAppSelector((state) => state.tree.activeNodeId);
+  const { tree, activeNodeId } = useAppSelector((state) => state.tree);
 
   const isActive = useMemo(
     () => node.id === activeNodeId,
     [node.id, activeNodeId]
   );
   const isRoot = useMemo(() => node.id === rootId, [node.id, rootId]);
+  const isAncestor = useMemo(() => {
+    const parents = findAncestors(tree!, activeNodeId);
+    const ids = parents.map((item) => item.id);
+
+    return (id: string) => ids.includes(id);
+  }, [tree, activeNodeId]);
 
   const changeNameHandler: React.ChangeEventHandler<HTMLInputElement> = (
     event
@@ -49,7 +56,7 @@ const Node: React.FC<NodeProps> = ({ node, rootId }) => {
     if (node.id === activeNodeId) {
       dispatch(treeActions.setActiveNodeId({ id: node.parentId }));
     }
-    dispatch(treeActions.removeNode({ id: node.id }));
+    dispatch(treeActions.deleteNode({ id: node.id }));
   };
 
   const navigateNodeHandler = () => {
@@ -57,9 +64,6 @@ const Node: React.FC<NodeProps> = ({ node, rootId }) => {
   };
 
   const navigateRootHandler = () => {
-    console.log(rootId);
-    console.log(node.id);
-
     dispatch(treeActions.setActiveNodeId({ id: rootId }));
   };
 
@@ -75,7 +79,7 @@ const Node: React.FC<NodeProps> = ({ node, rootId }) => {
           <header>
             <div>{isRoot ? 'ROOT' : 'Level ' + node.level}</div>
             {!isActive && (
-              <button onClick={navigateNodeHandler}>Activate</button>
+              <button onClick={navigateNodeHandler}>Navigate</button>
             )}
             {isActive && !isRoot && (
               <>
@@ -112,9 +116,12 @@ const Node: React.FC<NodeProps> = ({ node, rootId }) => {
       )}
 
       <div className="node-children">
-        {node.children.map((child) => (
-          <Node key={child.id} node={child} rootId={rootId} />
-        ))}
+        {node.children.map(
+          (child) =>
+            (isActive || isAncestor(child.id)) && (
+              <Node key={child.id} node={child} rootId={rootId} />
+            )
+        )}
       </div>
     </div>
   );

@@ -85,7 +85,7 @@ const treeSlice = createSlice({
       state.tree.info = { ...state.tree.info, ...payload.updates };
     },
 
-    removeNode: (state, { payload }: PayloadAction<{ id: string }>) => {
+    deleteNode: (state, { payload }: PayloadAction<{ id: string }>) => {
       if (!state.tree) return;
       const node = findByChildId(state.tree, payload.id);
 
@@ -94,8 +94,9 @@ const treeSlice = createSlice({
       node.children = node.children.filter((item) => item.id !== payload.id);
     },
 
-    removeTree: (state) => {
+    deleteTree: (state) => {
       state.tree = null;
+      state.activeNodeId = '';
     },
 
     setActiveNodeId: (state, { payload }: PayloadAction<{ id: string }>) => {
