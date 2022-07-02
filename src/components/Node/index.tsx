@@ -19,8 +19,8 @@ const Node: React.FC<NodeProps> = ({ node, rootId }) => {
   );
   const isRoot = useMemo(() => node.id === rootId, [node.id, rootId]);
   const isAncestor = useMemo(() => {
-    const parents = findAncestors(tree!, activeNodeId);
-    const ids = parents.map((item) => item.id);
+    const ancestors = findAncestors(tree!.root, activeNodeId);
+    const ids = ancestors.map((item) => item.id);
 
     return (id: string) => ids.includes(id);
   }, [tree, activeNodeId]);

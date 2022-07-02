@@ -1,7 +1,7 @@
-import { Tree, Node } from '../store/tree-slice';
+import { Node } from '../store/tree-slice';
 
-export const findById = (tree: Tree, id: string): Node | null => {
-  let currentNode: Node = tree.root;
+export const findById = (root: Node, id: string) => {
+  let currentNode = root;
   const queue: Node[] = [];
 
   queue.push(currentNode);
@@ -21,8 +21,8 @@ export const findById = (tree: Tree, id: string): Node | null => {
   return null;
 };
 
-export const findByChildId = (tree: Tree, id: string): Node | null => {
-  let currentNode: Node = tree.root;
+export const findByChildId = (root: Node, id: string) => {
+  let currentNode = root;
   const queue: Node[] = [];
 
   queue.push(currentNode);
@@ -42,49 +42,33 @@ export const findByChildId = (tree: Tree, id: string): Node | null => {
   return null;
 };
 
-export const traverseNodes = (root: Node): Node[] => {
+export const mapTree = (root: Node) => {
   let currentNode = root;
   const queue: Node[] = [];
-  const nodes: Node[] = [];
+  const map: { [key: Node['id']]: Node } = {};
 
   queue.push(currentNode);
 
   while (queue.length) {
     currentNode = queue.shift()!;
 
-    nodes.push(currentNode);
+    map[currentNode.id] = currentNode;
 
     if (currentNode.children.length) {
       currentNode.children.forEach((child) => queue.push(child));
     }
   }
 
-  return nodes;
-};
-
-export const mapTree = (node: Node) => {
-  const map: any = {};
-
-  const iterate = (node: Node) => {
-    map[node.id] = node;
-
-    if (node.children.length) {
-      node.children.forEach(iterate);
-    }
-  };
-
-  iterate(node);
-
   return map;
 };
 
-export const findAncestors = (tree: Tree, nodeId: string) => {
-  const map = mapTree(tree.root);
+export const findAncestors = (root: Node, id: string) => {
+  const map = mapTree(root);
 
   const parents: Node[] = [];
-  let parentId = map[nodeId]?.parentId;
+  let parentId = map[id]?.parentId;
 
-  parents.push(map[nodeId]);
+  parents.push(map[id]);
 
   while (parentId) {
     parents.push(map[parentId]);

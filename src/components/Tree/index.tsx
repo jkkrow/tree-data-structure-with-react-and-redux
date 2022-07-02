@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import Node from '../Node';
 import { useAppDispatch } from '../../store';
 import { Tree as TreeType, treeActions } from '../../store/tree-slice';
-import { traverseNodes } from '../../util/tree';
+import { mapTree } from '../../util/tree';
 import './index.css';
 
 interface TreeProps {
@@ -13,7 +13,10 @@ interface TreeProps {
 const Tree: React.FC<TreeProps> = ({ tree }) => {
   const dispatch = useAppDispatch();
 
-  const nodes = useMemo(() => traverseNodes(tree.root), [tree.root]);
+  const nodeCount = useMemo(() => {
+    const map = mapTree(tree.root);
+    return Object.keys(map).length;
+  }, [tree.root]);
 
   const changeNameHandler: React.ChangeEventHandler<HTMLInputElement> = (
     event
@@ -51,7 +54,7 @@ const Tree: React.FC<TreeProps> = ({ tree }) => {
         </label>
         <label>
           <div>Node Count</div>
-          <div>{nodes.length}</div>
+          <div>{nodeCount}</div>
         </label>
         <button onClick={submitTreeHandler}>Submit Tree</button>
         <button onClick={removeTreeHandler}>Remove Tree</button>

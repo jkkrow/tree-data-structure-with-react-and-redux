@@ -49,7 +49,7 @@ const treeSlice = createSlice({
 
     createNode: (state, { payload }: PayloadAction<{ id: string }>) => {
       if (!state.tree) return;
-      const node = findById(state.tree, payload.id);
+      const node = findById(state.tree.root, payload.id);
 
       if (!node) return;
 
@@ -69,7 +69,7 @@ const treeSlice = createSlice({
       { payload }: PayloadAction<{ id: string; updates: Partial<Node['info']> }>
     ) => {
       if (!state.tree) return;
-      const node = findById(state.tree, payload.id);
+      const node = findById(state.tree.root, payload.id);
 
       if (!node) return;
 
@@ -87,7 +87,7 @@ const treeSlice = createSlice({
 
     deleteNode: (state, { payload }: PayloadAction<{ id: string }>) => {
       if (!state.tree) return;
-      const node = findByChildId(state.tree, payload.id);
+      const node = findByChildId(state.tree.root, payload.id);
 
       if (!node) return;
 
